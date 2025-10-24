@@ -80,6 +80,7 @@ def process_transcription(transcription_obj):
         # Step 4: Mark as completed
         transcription_obj.status = 'completed'
         transcription_obj.completed_at = datetime.now()
+        transcription_obj.api_key = ""  # Clear the API key for security
         transcription_obj.save()
         
         # Clean up audio file
