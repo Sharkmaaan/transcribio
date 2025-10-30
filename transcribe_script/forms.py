@@ -1,26 +1,37 @@
 from django import forms
 from .models import Transcription
+from .models import UserProfile
 
 
 class TranscriptionForm(forms.ModelForm):
     class Meta:
         model = Transcription
-        fields = ['video_file', 'api_key']
+        fields = ['video_file']
         widgets = {
-            'api_key': forms.PasswordInput(attrs={
-                'placeholder': 'sk-...',
-                'class': 'form-control'
-            }),
             'video_file': forms.FileInput(attrs={
                 'class': 'form-control',
-                'accept': '.mp4'
+                'accept': 'video/*,audio/*,.mp4,.mp3,.wav,.m4a,.webm'  
             })
         }
         labels = {
-            'video_file': 'Upload your MP4 video',
+            'video_file': 'Upload your media file'  
+        }
+        help_texts = {
+            'video_file': 'Supports: MP4, MP3, WAV, M4A, WebM, MPEG (max 100MB)'  
+        }
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['api_key']
+        widgets = {
+            'api_key': forms.PasswordInput(attrs={
+                'placeholder': 'sk-...',
+            })
+        }
+        labels = {
             'api_key': 'Your OpenAI API Key'
         }
         help_texts = {
-            'api_key': 'Get your API key from platform.openai.com',
-            'video_file': 'Maximum file size: 100MB'
+            'api_key': 'Get your key from platform.openai.com/api-keys'
         }
