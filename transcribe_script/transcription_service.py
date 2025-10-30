@@ -1,20 +1,30 @@
 from openai import OpenAI
-from moviepy.editor import VideoFileClip
+import moviepy
+from moviepy.video.io.VideoFileClip import VideoFileClip
 import os
 from datetime import datetime
 
 
 def extract_audio(video_path):
-    """Extract audio from MP4 video and save as MP3"""
-    # Create audio filename
-    audio_path = video_path.replace('.mp4', '.mp3')
+    # Check if it's already an audio file
+    audio_extensions = ['.mp3', '.wav', '.m4a', '.webm', '.mpeg', '.mpga']
+    if any(video_path.lower().endswith(ext) for ext in audio_extensions):
+        # It's already audio, just return the path
+        return video_path
     
-    # Extract audio using moviepy
-    video = VideoFileClip(video_path)
-    video.audio.write_audiofile(audio_path)
-    video.close()
+    
+    # It's a video file, extract audio
+    audio_path = os.path.splitext(video_path)[0] + '.mp3'
+    
+    try:
+        video = VideoFileClip(video_path)
+        video.audio.write_audiofile(audio_path)
+        video.close()
+    except Exception as e:
+        raise Exception(f"Failed to extract audio: {str(e)}")
     
     return audio_path
+
 
 
 def transcribe_with_whisper(audio_path, api_key):
@@ -84,7 +94,8 @@ def process_transcription(transcription_obj):
         transcription_obj.save()
         
         # Clean up audio file
-        os.remove(audio_path)
+        if audio_path != video_path:
+            os.remove(audio_path)
         
         return True
         
