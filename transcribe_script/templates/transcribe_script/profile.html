@@ -32,9 +32,21 @@
             {% csrf_token %}
             
             <div>
-                <label for="{{ form.api_key.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
-                    {{ form.api_key.label }}
-                </label>
+                <div class="flex items-center justify-between mb-2">
+                    <label for="{{ form.api_key.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        {{ form.api_key.label }}
+                    </label>
+                    <button 
+                        type="button"
+                        onclick="openGuide()"
+                        class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center"
+                    >
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        What's an API key?
+                    </button>
+                </div>
                 <input 
                     type="password" 
                     name="api_key" 
@@ -95,6 +107,101 @@
         </div>
     </div>
     
+    <!-- API Key Guide Modal -->
+    <div id="guideModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-5 z-50">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+            <!-- Close Button -->
+            <button 
+                onclick="closeGuide()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            
+            <!-- Guide Content -->
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">🔑 What is an OpenAI API Key?</h3>
+            
+            <div class="space-y-6 text-gray-700">
+                <p class="leading-relaxed">
+                    An OpenAI API key is like a password that allows Transcripio to use OpenAI's powerful AI services to transcribe your videos. Think of it as your personal access pass to OpenAI's technology.
+                </p>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <p class="text-sm text-blue-800">
+                        <strong>Why do you need one?</strong> OpenAI charges for their services based on usage. By using your own API key, you only pay for what you use, and we don't have to charge you a subscription!
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">📝 How to Get Your API Key (5 minutes)</h4>
+                    <ol class="space-y-3 text-sm">
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs mr-3 mt-0.5 flex-shrink-0">1</span>
+                            <div>
+                                <p class="font-medium">Go to OpenAI's website</p>
+                                <a href="https://platform.openai.com/signup" target="_blank" class="text-emerald-600 hover:text-emerald-700 underline">
+                                    platform.openai.com/signup →
+                                </a>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs mr-3 mt-0.5 flex-shrink-0">2</span>
+                            <div>
+                                <p class="font-medium">Sign up or log in</p>
+                                <p class="text-gray-600">Create a free account if you don't have one</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs mr-3 mt-0.5 flex-shrink-0">3</span>
+                            <div>
+                                <p class="font-medium">Navigate to API Keys</p>
+                                <p class="text-gray-600">Click on your profile → View API Keys</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs mr-3 mt-0.5 flex-shrink-0">4</span>
+                            <div>
+                                <p class="font-medium">Create a new API key</p>
+                                <p class="text-gray-600">Click "Create new secret key" and copy it</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs mr-3 mt-0.5 flex-shrink-0">5</span>
+                            <div>
+                                <p class="font-medium">Paste it here!</p>
+                                <p class="text-gray-600">Your key will start with <code class="bg-gray-100 px-1 rounded">sk-...</code></p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                    <p class="text-sm text-yellow-800">
+                        <strong>💰 Cost:</strong> Transcribing is very affordable! A 10-minute video typically costs around $0.10 - $0.20. OpenAI gives you $5 of free credits when you sign up.
+                    </p>
+                </div>
+                
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                    <p class="text-sm text-red-800">
+                        <strong>⚠️ Important:</strong> Never share your API key with anyone! We encrypt it securely and delete it from our database after each use.
+                    </p>
+                </div>
+                
+                <div class="pt-4">
+                    <a 
+                        href="https://platform.openai.com/api-keys" 
+                        target="_blank"
+                        class="inline-block w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-semibold rounded-lg text-center transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg"
+                    >
+                        Get My API Key →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // Auto-hide messages after 5 seconds
         setTimeout(function() {
@@ -105,6 +212,24 @@
                 setTimeout(() => messagesDiv.remove(), 500);
             }
         }, 5000);
+        
+        // Modal functions
+        function openGuide() {
+            document.getElementById('guideModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeGuide() {
+            document.getElementById('guideModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('guideModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeGuide();
+            }
+        });
     </script>
     
 </body>

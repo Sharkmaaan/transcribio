@@ -1,0 +1,13 @@
+Django==5.2.7
+python-dotenv==1.1.1
+dj-database-url
+gunicorn
+whitenoise
+django-encrypted-model-fields==0.6.5
+pillow==11.3.0
+moviepy==2.2.1
+openai==2.3.0
+requests==2.32.3
+beautifulsoup4==4.12.3
+openpyxl==3.1.4
+pandas==2.2.2
