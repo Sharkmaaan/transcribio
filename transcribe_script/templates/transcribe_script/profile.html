@@ -4,182 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Settings - Transcripio</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 100%;
-            padding: 40px;
-        }
-    
-        h2 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .help-text {
-            display: block;
-            margin-top: 5px;
-            font-size: 12px;
-            color: #999;
-        }
-        
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        .messages {
-            margin-bottom: 20px;
-        }
-
-        .message {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-        <script>
-            setTimeout(function() {
-                const messages = document.querySelectorAll('.message');
-                messages.forEach(msg => {
-                    msg.style.transition = 'opacity 0.5s';
-                    msg.style.opacity = '0';
-                    setTimeout(() => msg.remove(), 500);
-                });
-            }, 5000);  // 5 seconds
-        </script>
-    <div class="container">
-        <h2>⚙️ Profile Settings</h2>
-        <p class="subtitle">Save your OpenAI API key for easy uploads</p>
-            {% if messages %}
-            <div class="messages">
-                 {% for message in messages %}
-            <div class="message {{ message.tags }}">
-        {{ message }}
+<body class="bg-gradient-to-br from-emerald-900 via-teal-900 to-green-950 min-h-screen flex items-center justify-center p-5">
+    
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">⚙️ Profile Settings</h2>
+            <p class="text-gray-600 text-sm">Save your OpenAI API key for easy uploads</p>
+        </div>
+        
+        <!-- Messages -->
+        {% if messages %}
+            <div class="space-y-3 mb-6" id="messages">
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800{% elif message.tags == 'error' %}bg-red-50 border-l-4 border-red-500 text-red-800{% else %}bg-blue-50 border-l-4 border-blue-500 text-blue-800{% endif %} p-4 rounded-lg animate-slide-in">
+                        <p class="font-medium">{{ message }}</p>
+                    </div>
+                {% endfor %}
             </div>
-     {% endfor %}
-    </div>
-{% endif %}  
-        <form method="post">
+        {% endif %}
+        
+        <!-- Form -->
+        <form method="post" class="space-y-6">
             {% csrf_token %}
             
-            <div class="form-group">
-                <label for="{{ form.api_key.id_for_label }}">
+            <div>
+                <label for="{{ form.api_key.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                     {{ form.api_key.label }}
                 </label>
-                {{ form.api_key }}
-                <span class="help-text">{{ form.api_key.help_text }}</span>
+                <input 
+                    type="password" 
+                    name="api_key" 
+                    id="{{ form.api_key.id_for_label }}"
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm font-mono transition-all duration-300 focus:outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
+                    placeholder="sk-..."
+                    {% if form.api_key.value %}value="{{ form.api_key.value }}"{% endif %}
+                >
+                {% if form.api_key.help_text %}
+                    <p class="text-xs text-gray-500 mt-2">{{ form.api_key.help_text }}</p>
+                {% endif %}
+                {% if form.api_key.errors %}
+                    <div class="mt-2 text-sm text-red-600">
+                        {% for error in form.api_key.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             
-            <button type="submit">💾 Save API Key</button>
+            <!-- Info Box -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-emerald-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="text-sm text-emerald-800">
+                        <p class="font-semibold mb-1">Your API key is encrypted</p>
+                        <p class="text-xs">We store your API key securely and it's automatically cleared after each use.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button 
+                type="submit"
+                class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-semibold rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-xl hover:from-emerald-700 hover:to-teal-800 active:translate-y-0"
+            >
+                💾 Save API Key
+            </button>
         </form>
         
-        <a href="{% url 'upload_video' %}" class="back-link">← Back to Upload</a>
+        <!-- Back Link -->
+        <div class="mt-8 text-center">
+            <a href="{% url 'upload_video' %}" class="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors inline-flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Upload
+            </a>
+        </div>
+        
+        <!-- Logout Button -->
+        <div class="mt-4 text-center">
+            <a href="{% url 'logout' %}" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+                Logout
+            </a>
+        </div>
     </div>
+    
+    <script>
+        // Auto-hide messages after 5 seconds
+        setTimeout(function() {
+            const messagesDiv = document.getElementById('messages');
+            if (messagesDiv) {
+                messagesDiv.style.transition = 'opacity 0.5s';
+                messagesDiv.style.opacity = '0';
+                setTimeout(() => messagesDiv.remove(), 500);
+            }
+        }, 5000);
+    </script>
+    
 </body>
 </html>

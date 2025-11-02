@@ -4,175 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transcripio - Video Transcription</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            width: 100%;
-            padding: 40px;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        input[type="file"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="file"]:hover,
-        input[type="password"]:hover {
-            border-color: #667eea;
-        }
-        
-        input[type="file"]:focus,
-        input[type="password"]:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .help-text {
-            display: block;
-            margin-top: 5px;
-            font-size: 12px;
-            color: #999;
-        }
-        
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .errors {
-            background: #fee;
-            border: 1px solid #fcc;
-            color: #c33;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Transcripio</h1>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <p style="color: #666; margin: 0;">Welcome, {{ user.username }}!</p>
-        <div style="display: flex; gap: 10px;">
-            <a href="{% url 'profile_settings' %}" style="padding: 8px 16px; font-size: 14px; background: #667eea; color: white; text-decoration: none; border-radius: 8px;">
-            ⚙️ Settings
-            </a>
-        <form action="{% url 'logout' %}" method="post" style="margin: 0;">
-            {% csrf_token %}
-            <button type="submit" style="padding: 8px 16px; font-size: 14px; width: auto; background: #dc3545;">
-                Logout
-            </button>
-        </form>
+<body class="bg-gradient-to-br from-emerald-900 via-teal-900 to-green-950 min-h-screen flex items-center justify-center p-5">
+    
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-10">
+        
+        <!-- Header with User Info -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">🎙️ Transcripio</h1>
+                <p class="text-gray-600 text-sm mt-1">Welcome, <span class="font-semibold">{{ user.username }}</span>!</p>
+            </div>
+            <div class="flex gap-3">
+                <a 
+                    href="{% url 'profile_settings' %}" 
+                    class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-colors"
+                >
+                    ⚙️ Settings
+                </a>
+                <form action="{% url 'logout' %}" method="post" class="m-0">
+                    {% csrf_token %}
+                    <button 
+                        type="submit" 
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
+                    >
+                        Logout
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
+        
+        <!-- Success Messages -->
         {% if messages %}
-        <div style="margin-bottom: 20px;">
+        <div class="space-y-3 mb-6">
             {% for message in messages %}
-            <div style="padding: 12px 16px; border-radius: 8px; margin-bottom: 10px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; animation: slideIn 0.3s ease-out;">
-                {{ message }}
+            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-lg animate-slide-in">
+                <p class="text-emerald-800 font-medium">{{ message }}</p>
             </div>
             {% endfor %}
         </div>
         {% endif %}
-        <p class="subtitle">Upload your video or audio file to transcribe it</p>
         
+        <!-- Subtitle -->
+        <p class="text-gray-600 mb-8">Upload your video or audio file to transcribe it</p>
+        
+        <!-- Error Messages -->
         {% if form.errors %}
-        <div class="errors">
-            <strong>Please fix the following errors:</strong>
-            {{ form.errors }}
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-6">
+            <p class="text-red-800 font-semibold mb-2">Please fix the following errors:</p>
+            <ul class="list-disc list-inside text-red-700 text-sm space-y-1">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
         </div>
         {% endif %}
         
-        <form method="post" enctype="multipart/form-data">
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
             
-            <div class="form-group">
-                <label for="{{ form.video_file.id_for_label }}">
+            <!-- File Upload -->
+            <div>
+                <label for="{{ form.video_file.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
                     {{ form.video_file.label }}
                 </label>
-                {{ form.video_file }}
-                <span class="help-text">{{ form.video_file.help_text }}</span>
+                
+                <!-- Custom File Upload Area -->
+                <div class="relative border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-500 transition-colors">
+                    <input 
+                        type="file" 
+                        name="video_file" 
+                        id="{{ form.video_file.id_for_label }}"
+                        accept="video/*,audio/*,.mp4,.mp3,.wav,.m4a,.webm,.mpeg"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        onchange="updateFileName(this)"
+                    >
+                    <div class="pointer-events-none">
+                        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold text-emerald-600">Click to upload</span> or drag and drop
+                        </p>
+                        <p class="text-xs text-gray-500" id="file-name">
+                            MP4, MP3, WAV, M4A, WebM, MPEG
+                        </p>
+                    </div>
+                </div>
+                
+                {% if form.video_file.help_text %}
+                <p class="text-xs text-gray-500 mt-2">{{ form.video_file.help_text }}</p>
+                {% endif %}
             </div>
             
-            <button type="submit">Start Transcription</button>
+            <!-- Info Box -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="text-sm text-blue-800">
+                        <p class="font-semibold mb-1">How it works</p>
+                        <ol class="text-xs space-y-1 list-decimal list-inside">
+                            <li>Upload your audio or video file</li>
+                            <li>We'll transcribe it using AI</li>
+                            <li>Download both raw and polished transcripts</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button 
+                type="submit"
+                class="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-semibold rounded-xl text-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-xl hover:from-emerald-700 hover:to-teal-800 active:translate-y-0"
+            >
+                🚀 Start Transcription
+            </button>
         </form>
     </div>
+    
+    <script>
+        function updateFileName(input) {
+            const fileName = input.files[0]?.name || 'MP4, MP3, WAV, M4A, WebM, MPEG';
+            document.getElementById('file-name').textContent = fileName;
+        }
+    </script>
+    
 </body>
 </html>

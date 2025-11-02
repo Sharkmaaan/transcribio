@@ -4,248 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transcription Status - Transcripio</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 700px;
-            width: 100%;
-            padding: 40px;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 32px;
-        }
-        
-        .status-card {
-            background: #f7f7f7;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-processing {
-            background: #cce5ff;
-            color: #004085;
-        }
-        
-        .status-completed {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-failed {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .info-row:last-child {
-            border-bottom: none;
-        }
-        
-        .info-label {
-            color: #666;
-            font-weight: 600;
-        }
-        
-        .info-value {
-            color: #333;
-        }
-        
-        .download-section {
-            margin-top: 30px;
-        }
-        
-        .download-section h2 {
-            color: #333;
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .download-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .download-btn {
-            display: block;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .download-btn.disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        .error-message {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .auto-refresh {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
     
     {% if transcription.status == 'pending' or transcription.status == 'processing' %}
     <meta http-equiv="refresh" content="5">
     {% endif %}
 </head>
-<body>
-    <div class="container">
-        <h1>📊 Transcription Status</h1>
+<body class="bg-gradient-to-br from-emerald-900 via-teal-900 to-green-950 min-h-screen flex items-center justify-center p-5">
+    
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-10">
         
-        <div class="status-card">
-            <span class="status-badge status-{{ transcription.status }}">
+        <!-- Header -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">📊 Transcription Status</h1>
+        
+        <!-- Status Card -->
+        <div class="bg-gray-50 rounded-2xl p-6 mb-6">
+            <!-- Status Badge -->
+            <div class="mb-4">
                 {% if transcription.status == 'pending' %}
-                    ⏳ Pending
+                    <span class="inline-block px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">
+                        ⏳ Pending
+                    </span>
                 {% elif transcription.status == 'processing' %}
-                    ⚙️ Processing
+                    <span class="inline-block px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                        ⚙️ Processing
+                    </span>
                 {% elif transcription.status == 'completed' %}
-                    ✅ Completed
+                    <span class="inline-block px-4 py-2 bg-emerald-100 text-emerald-800 rounded-full text-sm font-semibold">
+                        ✅ Completed
+                    </span>
                 {% elif transcription.status == 'failed' %}
-                    ❌ Failed
+                    <span class="inline-block px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm font-semibold">
+                        ❌ Failed
+                    </span>
                 {% endif %}
-            </span>
-            
-            <div class="info-row">
-                <span class="info-label">Video File:</span>
-                <span class="info-value">{{ transcription.video_file.name }}</span>
             </div>
             
-            <div class="info-row">
-                <span class="info-label">Uploaded:</span>
-                <span class="info-value">{{ transcription.created_at|date:"F d, Y H:i" }}</span>
+            <!-- Info Rows -->
+            <div class="space-y-3">
+                <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                    <span class="font-semibold text-gray-600">Video File:</span>
+                    <span class="text-gray-800 text-right truncate ml-4 max-w-xs">{{ transcription.video_file.name }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                    <span class="font-semibold text-gray-600">Uploaded:</span>
+                    <span class="text-gray-800">{{ transcription.created_at|date:"F d, Y H:i" }}</span>
+                </div>
+                
+                {% if transcription.completed_at %}
+                <div class="flex justify-between items-center py-3">
+                    <span class="font-semibold text-gray-600">Completed:</span>
+                    <span class="text-gray-800">{{ transcription.completed_at|date:"F d, Y H:i" }}</span>
+                </div>
+                {% endif %}
             </div>
-            
-            {% if transcription.completed_at %}
-            <div class="info-row">
-                <span class="info-label">Completed:</span>
-                <span class="info-value">{{ transcription.completed_at|date:"F d, Y H:i" }}</span>
-            </div>
-            {% endif %}
         </div>
         
+        <!-- Processing Loader -->
         {% if transcription.status == 'processing' %}
-        <div class="loader"></div>
-        <p style="text-align: center; color: #666; margin-top: 10px;">
-            Transcribing your video... This may take a few minutes.
-        </p>
+        <div class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-4 border-emerald-600"></div>
+            <p class="text-gray-600 mt-4 font-medium">
+                Transcribing your video... This may take a few minutes.
+            </p>
+        </div>
         {% endif %}
         
+        <!-- Download Section -->
         {% if transcription.status == 'completed' %}
-        <div class="download-section">
-            <h2>📥 Download Transcripts</h2>
-            <div class="download-buttons">
-                <a href="{% url 'download_transcript' transcription.id 'raw' %}" class="download-btn">
+        <div class="mt-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">📥 Download Transcripts</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a 
+                    href="{% url 'download_transcript' transcription.id 'raw' %}" 
+                    class="block bg-gradient-to-r from-emerald-600 to-teal-700 text-white text-center font-semibold py-4 rounded-xl transition-all duration-200 transform hover:-translate-y-1 hover:shadow-xl hover:from-emerald-700 hover:to-teal-800"
+                >
                     📄 Raw Transcript
                 </a>
-                <a href="{% url 'download_transcript' transcription.id 'polished' %}" class="download-btn">
+                <a 
+                    href="{% url 'download_transcript' transcription.id 'polished' %}" 
+                    class="block bg-gradient-to-r from-teal-600 to-emerald-700 text-white text-center font-semibold py-4 rounded-xl transition-all duration-200 transform hover:-translate-y-1 hover:shadow-xl hover:from-teal-700 hover:to-emerald-800"
+                >
                     ✨ Polished Transcript
                 </a>
             </div>
         </div>
         {% endif %}
         
+        <!-- Error Message -->
         {% if transcription.status == 'failed' %}
-        <div class="error-message">
-            <strong>Error:</strong> {{ transcription.error_message }}
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mt-6">
+            <div class="flex items-start">
+                <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                <div>
+                    <p class="font-semibold text-red-800">Error</p>
+                    <p class="text-red-700 text-sm mt-1">{{ transcription.error_message }}</p>
+                </div>
+            </div>
         </div>
         {% endif %}
         
+        <!-- Auto-refresh Notice -->
         {% if transcription.status == 'pending' or transcription.status == 'processing' %}
-        <p class="auto-refresh">This page will automatically refresh every 5 seconds</p>
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-500 flex items-center justify-center">
+                <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                This page will automatically refresh every 5 seconds
+            </p>
+        </div>
         {% endif %}
         
-        <a href="{% url 'upload_video' %}" class="back-link">← Upload Another Video</a>
+        <!-- Back Link -->
+        <div class="mt-8 text-center">
+            <a href="{% url 'upload_video' %}" class="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors inline-flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Upload Another Video
+            </a>
+        </div>
     </div>
+    
 </body>
 </html>
