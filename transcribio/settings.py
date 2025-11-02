@@ -18,9 +18,6 @@ import dj_database_url
 # Load environment variables from .env file
 load_dotenv()
 
-# Build paths inside the project
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -92,8 +89,6 @@ WSGI_APPLICATION = "transcribio.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-
-
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
@@ -138,9 +133,20 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files
+# Media files - CREATE DIRECTORY WITH PROPER PERMISSIONS
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Create media directory if it doesn't exist and set permissions
+try:
+    os.makedirs(MEDIA_ROOT, mode=0o755, exist_ok=True)
+except Exception as e:
+    print(f"Warning: Could not create media directory: {e}")
+
+# File upload permissions
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -149,5 +155,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Redirect to login page when user tries to access protected pages
 LOGIN_URL = '/accounts/login/'
 # Redirect to upload page after login
-LOGIN_REDIRECT_URL = "/"  
-
+LOGIN_REDIRECT_URL = "/"
