@@ -156,3 +156,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = '/accounts/login/'
 # Redirect to upload page after login
 LOGIN_REDIRECT_URL = "/"
+
+# Ensure media directories exist with proper permissions
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+
+# Create all required subdirectories on startup
+import os
+for subdir in ['videos']:
+    path = os.path.join(MEDIA_ROOT, subdir)
+    try:
+        os.makedirs(path, mode=0o777, exist_ok=True)
+    except Exception as e:
+        print(f"Warning: Could not create {path}: {e}")
