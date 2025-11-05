@@ -40,7 +40,7 @@ MoviePy - Video/audio processing
 
 Deployment
 
-Hetzner Cloud - Hosting infrastructure
+Digital Ocean - Hosting infrastructure
 Appliku - Deployment automation
 Cloudflare - DNS and CDN
 WhiteNoise - Static file serving
