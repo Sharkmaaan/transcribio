@@ -28,7 +28,7 @@ def signup(request):
     else:
         form = UserCreationForm()
     
-    return render(request, 'registration/signup.html', {'form': form})
+    return render(request, 'account/signup.html', {'form': form})
 
 @login_required
 def upload_video(request):

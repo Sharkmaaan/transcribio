@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "transcribe_script",
     "accounts",
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",  
     "django.contrib.messages.middleware.MessageMiddleware",  
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "transcribio.urls"
@@ -82,6 +86,7 @@ TEMPLATES = [
         },
     },
 ]
+SITE_ID = 1
 
 WSGI_APPLICATION = "transcribio.wsgi.application"
 
@@ -96,7 +101,13 @@ DATABASES = {
     )
 }
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django Admin, regardless of allauth settings
+    'django.contrib.auth.backends.ModelBackend',
 
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
