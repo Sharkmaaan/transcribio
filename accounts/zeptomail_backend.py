@@ -14,7 +14,7 @@ class ZeptoMailAPIBackend(BaseEmailBackend):
 
         sent_count = 0
         api_url = "https://api.zeptomail.eu/v1.1/email"
-        api_token = "yA6KbHtZ4wyhy29REkk50ZSI8t1lpa88jym/tiCzKMN1KNTp3aE2hkVlI4S+LmbZjI7UsK9UOY9CdYu7tokPe8YzMtQHJ5TGTuv4P2uV48xh8ciEYNYggpSgALQWEKVLdh8tDykwQvQiWA=="  # Env variable for token
+        api_token = "Zoho-enczapikey yA6KbHtZ4wyhy29REkk50ZSI8t1lpa88jym/tiCzKMN1KNTp3aE2hkVlI4S+LmbZjI7UsK9UOY9CdYu7tokPe8YzMtQHJ5TGTuv4P2uV48xh8ciEYNYggpSgALQWEKVLdh8tDykwQvQiWA=="  # Env variable for token
 
         if not api_token:
             if not self.fail_silently:
