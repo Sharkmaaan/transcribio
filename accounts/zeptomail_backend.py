@@ -24,7 +24,7 @@ class ZeptoMailAPIBackend(BaseEmailBackend):
         headers = {
             "accept": "application/json",
             "content-type": "application/json",
-            "authorization": f"Zoho-enczapikey {api_token}"
+            "authorization": f"Zoho-enczapikey ={api_token}"
         }
 
         for message in email_messages:
