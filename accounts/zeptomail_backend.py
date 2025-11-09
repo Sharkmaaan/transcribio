@@ -14,17 +14,18 @@ class ZeptoMailAPIBackend(BaseEmailBackend):
 
         sent_count = 0
         api_url = "https://api.zeptomail.eu/v1.1/email"
-        api_token = "Zoho-enczapikey yA6KbHtZ4wyhy29REkk50ZSI8t1lpa88jym/tiCzKMN1KNTp3aE2hkVlI4S+LmbZjI7UsK9UOY9CdYu7tokPe8YzMtQHJ5TGTuv4P2uV48xh8ciEYNYggpSgALQWEKVLdh8tDykwQvQiWA=="  # Env variable for token
+        api_token = os.environ.get("ZEPTOMAIL_API_TOKEN")  # Env variable for token
 
         if not api_token:
             if not self.fail_silently:
                 print("ERROR: ZEPTOMAIL_API_TOKEN not set in environment.")
             return 0
 
+        # Build correct Authorization header (env must contain raw token only)
         headers = {
             "accept": "application/json",
             "content-type": "application/json",
-            "authorization": f"Zoho-enczapikey ={api_token}"
+            "authorization": f"Zoho-enczapikey {api_token}"
         }
 
         for message in email_messages:
@@ -34,6 +35,8 @@ class ZeptoMailAPIBackend(BaseEmailBackend):
 
             payload = {
                 "from": {"address": message.from_email},
+                # include agent id only if provided in env
+                **({"agent": os.environ.get("ZEPTOMAIL_AGENT_ID")} if os.environ.get("ZEPTOMAIL_AGENT_ID") else {}),
                 "to": to_list,
                 "subject": message.subject,
                 "htmlbody": message.body,  # Supports HTML
