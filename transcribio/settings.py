@@ -51,11 +51,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "transcribe_script",
     "accounts",
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +87,7 @@ TEMPLATES = [
         },
     },
 ]
-SITE_ID = 1
+
 
 WSGI_APPLICATION = "transcribio.wsgi.application"
 
@@ -96,8 +97,9 @@ WSGI_APPLICATION = "transcribio.wsgi.application"
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600,
+        conn_health_checks=True,
     )
 }
 
@@ -108,6 +110,64 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+SITE_ID = 1
+# ----------------------------------------------------------------------
+# 📧 EMAIL CONFIGURATION
+# ----------------------------------------------------------------------
+
+if DEBUG:
+    # Development: Print emails to console/terminal
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    print("Using console email backend (emails will print to terminal)")
+else:
+    # Production: Use actual SMTP
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+    EMAIL_HOST = os.environ.get('MAIL_HOST')
+    EMAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
+    EMAIL_HOST_USER = os.environ.get('MAIL_USERNAME')
+    EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    
+    MAIL_ENCRYPTION = os.environ.get('MAIL_ENCRYPTION', 'tls').lower()
+    if MAIL_ENCRYPTION == 'ssl':
+        EMAIL_USE_SSL = True
+        EMAIL_USE_TLS = False
+    elif MAIL_ENCRYPTION == 'tls':
+        EMAIL_USE_TLS = True
+        EMAIL_USE_SSL = False
+    else:
+        EMAIL_USE_TLS = True
+        EMAIL_USE_SSL = False
+
+# These apply to both development and production
+DEFAULT_FROM_EMAIL = f"{os.environ.get('MAIL_FROM_NAME', 'Transcriptio')} <{os.environ.get('MAIL_FROM_ADDRESS', 'noreply@transcripio.com')}>"
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+
+# ----------------------------------------------------------------------
+# 🔐 DJANGO-ALLAUTH SETTINGS
+# ----------------------------------------------------------------------
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Change to optional for now to test
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = False  # Since you're using email for auth
+
+# Email confirmation settings
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
+# Redirect URLs
+ACCOUNT_SIGNUP_REDIRECT_URL = "/"  # Where to go after signup
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/"  # After email confirmation
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "/accounts/login/"
+
+# Logout settings
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+ACCOUNT_LOGOUT_ON_GET = True
+
+# Important: This tells allauth where to redirect after email is sent
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = False  # Only ask for email once
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

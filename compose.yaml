@@ -13,6 +13,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    ports:
+      - "5432:5432"
 
   server:
     build:
@@ -21,10 +23,8 @@ services:
       - 8000:8000
     env_file:
       - .env
-    # ADD THIS ENVIRONMENT BLOCK:
     environment:
-      DATABASE_URL_SCHEMES: 'postgres=postgresql_psycopg,postgresql=postgresql_psycopg'
-    # END ENVIRONMENT BLOCK
+      DATABASE_URL: postgresql://transcribio_user:${DB_PASSWORD}@db:5432/transcribio
     depends_on:
       db:
         condition: service_healthy

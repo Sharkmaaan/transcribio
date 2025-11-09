@@ -18,11 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from accounts.views import check_verification_status
 
 urlpatterns = [
+    path('', include('transcribe_script.urls')),
     path('admin/', admin.site.urls),
     path("accounts/", include("allauth.urls")),
-    path('', include('transcribe_script.urls')),
+    path('accounts/check-verification/', check_verification_status, name='check_verification'),
+    path('accounts/', include('allauth.urls')),
  
 ]
 
