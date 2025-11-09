@@ -60,4 +60,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the application.
-CMD gunicorn 'transcribio.wsgi:application' --bind=0.0.0.0:8000
+CMD gunicorn 'transcripio.wsgi:application' --bind=0.0.0.0:8000
