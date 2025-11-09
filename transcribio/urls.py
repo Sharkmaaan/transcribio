@@ -25,7 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path('accounts/check-verification/', check_verification_status, name='check_verification'),
-    path('accounts/', include('allauth.urls')),
  
 ]
 

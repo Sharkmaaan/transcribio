@@ -1,7 +1,7 @@
 Django==5.2.7
 python-dotenv==1.1.1
 dj-database-url
-psycopg
+psycopg2-binary==2.9.5
 gunicorn
 whitenoise
 django-encrypted-model-fields==0.6.5
