@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+from email.utils import parseaddr
 from django.core.mail.backends.base import BaseEmailBackend
 
 class ZeptoMailAPIBackend(BaseEmailBackend):
@@ -42,15 +43,23 @@ class ZeptoMailAPIBackend(BaseEmailBackend):
             for addr in message.to:
                 to_list.append({"email_address": {"address": addr}})
 
-            # Ensure from-address is a real email; fall back to MAIL_FROM_ADDRESS env var
-            from_address = message.from_email
-            if not from_address or "@" not in str(from_address):
-                from_address = os.environ.get("MAIL_FROM_ADDRESS", from_address)
+            # Ensure `from` contains a bare email address and optional name
+            raw_from = message.from_email or os.environ.get("MAIL_FROM_ADDRESS", "")
+            name, email_addr = parseaddr(str(raw_from))
+            # fallback to MAIL_FROM_ADDRESS env if parsing failed
+            if not email_addr:
+                fallback = os.environ.get("MAIL_FROM_ADDRESS", "")
+                name2, email_addr2 = parseaddr(fallback)
+                name = name or name2
+                email_addr = email_addr or email_addr2
 
+            from_field = {"address": email_addr}
+            if name:
+                from_field["name"] = name
+
+            # Build payload without the `agent` key (ZeptoMail reported agent as extra key)
             payload = {
-                "from": {"address": from_address},
-                # include agent id only if provided in env
-                **({"agent": os.environ.get("ZEPTOMAIL_AGENT_ID")} if os.environ.get("ZEPTOMAIL_AGENT_ID") else {}),
+                "from": from_field,
                 "to": to_list,
                 "subject": message.subject,
                 "htmlbody": message.body,  # Supports HTML
