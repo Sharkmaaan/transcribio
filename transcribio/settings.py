@@ -14,7 +14,10 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import dj_database_url
+import environ
 
+env = environ.Env()
+environ.Env.read_env()
 # Load environment variables from .env file
 load_dotenv()
 
@@ -96,11 +99,7 @@ WSGI_APPLICATION = "transcribio.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+'default': dj_database_url.parse(env('DATABASE_URL'))
 }
 
 AUTHENTICATION_BACKENDS = [

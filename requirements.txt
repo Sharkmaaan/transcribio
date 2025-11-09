@@ -6,6 +6,8 @@ gunicorn
 whitenoise
 django-encrypted-model-fields==0.6.5
 django-allauth
+django-environ
+dj-database-url
 pillow==11.3.0
 moviepy==2.2.1
 openai==2.3.0
