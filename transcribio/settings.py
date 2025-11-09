@@ -97,52 +97,9 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     print("DEBUG mode: using console email backend")
 else:
-    # Required environment variables
-    required_env_vars = [
-        'MAIL_HOST', 'MAIL_PORT', 'MAIL_USERNAME',
-        'MAIL_PASSWORD', 'MAIL_FROM_ADDRESS', 'MAIL_FROM_NAME', 'MAIL_ENCRYPTION'
-    ]
-    missing_vars = [var for var in required_env_vars if var not in os.environ or not os.environ[var]]
-    if missing_vars:
-        print(f"ERROR: Missing required email environment variables: {missing_vars}", file=sys.stderr)
-        sys.exit(1)
-
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ['MAIL_HOST']
-    EMAIL_PORT = int(os.environ['MAIL_PORT'])
-    EMAIL_HOST_USER = os.environ['MAIL_USERNAME']
-    EMAIL_HOST_PASSWORD = os.environ['MAIL_PASSWORD']
-
-    MAIL_ENCRYPTION = os.environ.get('MAIL_ENCRYPTION', 'tls').lower()
-    if MAIL_ENCRYPTION == 'ssl':
-        EMAIL_USE_SSL = True
-        EMAIL_USE_TLS = False
-    elif MAIL_ENCRYPTION == 'tls':
-        EMAIL_USE_TLS = True
-        EMAIL_USE_SSL = False
-    else:
-        print(f"WARNING: Unrecognized MAIL_ENCRYPTION='{MAIL_ENCRYPTION}', defaulting to TLS", file=sys.stderr)
-        EMAIL_USE_TLS = True
-        EMAIL_USE_SSL = False
-
+    EMAIL_BACKEND = 'accounts.zeptomail_backend.ZeptoMailAPIBackend'
     DEFAULT_FROM_EMAIL = f"{os.environ.get('MAIL_FROM_NAME')} <{os.environ.get('MAIL_FROM_ADDRESS')}>"
     SERVER_EMAIL = DEFAULT_FROM_EMAIL
-
-    # Test SMTP connection but fall back to console backend if fails
-    try:
-        if EMAIL_USE_SSL:
-            server = smtplib.SMTP_SSL(EMAIL_HOST, EMAIL_PORT, timeout=10)
-        else:
-            server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT, timeout=10)
-            if EMAIL_USE_TLS:
-                server.starttls()
-        server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-        server.quit()
-        print("SMTP test connection successful.")
-    except Exception as e:
-        print(f"WARNING: Could not connect to SMTP server: {e}", file=sys.stderr)
-        print("Falling back to console email backend.")
-        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ----------------------------------------------------------------------
 # 🔐 DJANGO-ALLAUTH SETTINGS
