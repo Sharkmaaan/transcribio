@@ -23,7 +23,7 @@
                 >
                     ⚙️ Settings
                 </a>
-                <form action="{% url 'logout' %}" method="post" class="m-0">
+                <form action="{% url 'account_logout' %}" method="post" class="m-0">
                     {% csrf_token %}
                     <button 
                         type="submit" 
