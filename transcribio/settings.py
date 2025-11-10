@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'widget_tweaks',
+    'encrypted_model_fields'
 ]
 
 MIDDLEWARE = [
