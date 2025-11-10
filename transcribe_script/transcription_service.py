@@ -93,9 +93,14 @@ def process_transcription(transcription_obj):
         transcription_obj.api_key = ""  # Clear the API key for security
         transcription_obj.save()
         
-        # Clean up audio file
+        # Step 5: Clean up files to save storage
+        # Delete extracted audio file if it's different from original
         if audio_path != video_path:
-            os.remove(audio_path)
+            if os.path.exists(audio_path):
+                os.remove(audio_path)
+        
+        # Delete the original uploaded file through Django's file system
+        transcription_obj.video_file.delete(save=False)
         
         return True
         
