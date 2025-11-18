@@ -7,7 +7,7 @@ from datetime import datetime
 
 def extract_audio(video_path):
     # Check if it's already an audio file
-    audio_extensions = ['.mp3', '.wav', '.m4a', '.webm', '.mpeg', '.mpga']
+    audio_extensions = ['.mp3', '.wav', '.m4a', '.webm', '.mpeg', '.mpga', '.mkv']
     if any(video_path.lower().endswith(ext) for ext in audio_extensions):
         # It's already audio, just return the path
         return video_path
