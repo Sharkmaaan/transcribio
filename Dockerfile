@@ -3,10 +3,6 @@
 ARG PYTHON_VERSION=3.11.9
 FROM python:${PYTHON_VERSION}-slim as base
 
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
-    
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -16,7 +12,7 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install system dependencies including ffmpeg for moviepy
+# Install system dependencies including ffmpeg (do this ONCE at the beginning)
 RUN apt-get update && \
     apt-get install -y \
     libpq-dev \
