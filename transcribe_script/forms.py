@@ -10,14 +10,14 @@ class TranscriptionForm(forms.ModelForm):
         widgets = {
             'video_file': forms.FileInput(attrs={
                 'class': 'form-control',
-                'accept': 'video/*,audio/*,.mp4,.mp3,.wav,.m4a,.webm'  
+                'accept': 'video/*,audio/*,.mp4,.mp3,.wav,.m4a,.webm,.mkv'  
             })
         }
         labels = {
             'video_file': 'Upload your media file'  
         }
         help_texts = {
-            'video_file': 'Supports: MP4, MP3, WAV, M4A, WebM, MPEG (max 100MB)'  
+            'video_file': 'Supports: MP4, MP3, WAV, M4A, WebM, MPEG, MKV (max 100MB)'  
         }
 
 class UserProfileForm(forms.ModelForm):

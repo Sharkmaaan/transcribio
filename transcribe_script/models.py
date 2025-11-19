@@ -6,12 +6,12 @@ from encrypted_model_fields.fields import EncryptedCharField
 
 def validate_video_file(file):
     """Check if the uploaded file is a supported format"""
-    allowed_extensions = ['.mp4', '.mp3', '.wav', '.m4a', '.webm', '.mpeg', '.mpga']
+    allowed_extensions = ['.mp4', '.mp3', '.wav', '.m4a', '.webm', '.mpeg', '.mpga', '.mkv']
     
     file_extension = file.name.lower()
     if not any(file_extension.endswith(ext) for ext in allowed_extensions):
         raise ValidationError(
-            f'Unsupported file format. Allowed formats: MP4, MP3, WAV, M4A, WebM, MPEG, MPGA'
+            f'Unsupported file format. Allowed formats: MP4, MP3, WAV, M4A, WebM, MPEG, MPGA, MKV'
         )
 
 
