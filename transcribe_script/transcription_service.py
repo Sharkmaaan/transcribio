@@ -64,50 +64,81 @@ def polish_with_chatgpt(raw_transcript, api_key):
 
 def split_video_into_chunks(video_path, chunk_size_mb=90):
     """
-    Split a video into smaller chunks based on file size.
+    Split a video/audio into smaller chunks based on file size.
     Returns list of chunk file paths.
     """
     chunk_paths = []
     
     try:
-        video = VideoFileClip(video_path)
-        total_duration = video.duration
         file_size_mb = os.path.getsize(video_path) / (1024 * 1024)
         
-        # Calculate how many chunks we need
-        num_chunks = math.ceil(file_size_mb / chunk_size_mb)
-        
-        if num_chunks == 1:
-            # File is small enough, no splitting needed
-            video.close()
+        # If file is small enough, no splitting needed
+        if file_size_mb <= chunk_size_mb:
             return [video_path]
         
-        # Calculate duration per chunk
-        chunk_duration = total_duration / num_chunks
+        # Check if it's an audio file
+        audio_extensions = ['.mp3', '.wav', '.m4a', '.webm', '.mpeg', '.mpga']
+        is_audio = any(video_path.lower().endswith(ext) for ext in audio_extensions)
         
-        base_path = os.path.splitext(video_path)[0]
+        if is_audio:
+            # Use pydub for audio files
+            from pydub import AudioSegment
+            
+            audio = AudioSegment.from_file(video_path)
+            total_duration_ms = len(audio)
+            
+            # Calculate how many chunks we need
+            num_chunks = math.ceil(file_size_mb / chunk_size_mb)
+            chunk_duration_ms = total_duration_ms / num_chunks
+            
+            base_path = os.path.splitext(video_path)[0]
+            
+            for i in range(num_chunks):
+                start_ms = int(i * chunk_duration_ms)
+                end_ms = int(min((i + 1) * chunk_duration_ms, total_duration_ms))
+                
+                chunk_path = f"{base_path}_chunk_{i+1}.mp3"
+                
+                # Extract chunk
+                chunk = audio[start_ms:end_ms]
+                chunk.export(chunk_path, format="mp3")
+                
+                chunk_paths.append(chunk_path)
+            
+            return chunk_paths
         
-        for i in range(num_chunks):
-            start_time = i * chunk_duration
-            end_time = min((i + 1) * chunk_duration, total_duration)
+        else:
+            # Use MoviePy for video files
+            video = VideoFileClip(video_path)
+            total_duration = video.duration
             
-            chunk_path = f"{base_path}_chunk_{i+1}.mp4"
+            # Calculate how many chunks we need
+            num_chunks = math.ceil(file_size_mb / chunk_size_mb)
+            chunk_duration = total_duration / num_chunks
             
-            # Extract chunk
-            chunk = video.subclip(start_time, end_time)
-            chunk.write_videofile(
-                chunk_path,
-                codec='libx264',
-                audio_codec='aac',
-                verbose=False,
-                logger=None
-            )
-            chunk.close()
+            base_path = os.path.splitext(video_path)[0]
             
-            chunk_paths.append(chunk_path)
-        
-        video.close()
-        return chunk_paths
+            for i in range(num_chunks):
+                start_time = i * chunk_duration
+                end_time = min((i + 1) * chunk_duration, total_duration)
+                
+                chunk_path = f"{base_path}_chunk_{i+1}.mp4"
+                
+                # Extract chunk
+                chunk = video.subclip(start_time, end_time)
+                chunk.write_videofile(
+                    chunk_path,
+                    codec='libx264',
+                    audio_codec='aac',
+                    verbose=False,
+                    logger=None
+                )
+                chunk.close()
+                
+                chunk_paths.append(chunk_path)
+            
+            video.close()
+            return chunk_paths
         
     except Exception as e:
         raise Exception(f"Failed to split video: {str(e)}")
