@@ -15,3 +15,4 @@ requests==2.32.3
 beautifulsoup4==4.12.3
 openpyxl==3.1.4
 django-widget-tweaks
+pydub==0.25.1
