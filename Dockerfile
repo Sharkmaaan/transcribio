@@ -12,16 +12,13 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install system dependencies including ffmpeg
+# Install system dependencies
 # Add --no-install-recommends to keep image smaller
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libpq-dev \
     gcc \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/* \
-    && ffmpeg -version \
-    && ffprobe -version
+    && rm -rf /var/lib/apt/lists/*
 
 # Create a non-privileged user that the app will run under.
 ARG UID=10001
@@ -48,9 +45,6 @@ COPY --chown=appuser:appuser . .
 
 # Switch to the non-privileged user to run the application.
 USER appuser
-
-# Verify ffmpeg is accessible as the appuser
-RUN which ffmpeg && which ffprobe
 
 # Expose the port that the application listens on.
 EXPOSE 8000
