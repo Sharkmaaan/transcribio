@@ -1,35 +1,39 @@
 from openai import OpenAI
 import os
 from datetime import datetime
-from pydub import AudioSegment
-    
-def split_audio_into_chunks(audio_path, max_size_mb=20):
-    """Split audio file into chunks if it exceeds max_size_mb"""
-    file_size_mb = os.path.getsize(audio_path) / (1024 * 1024)
+
+def split_file_into_chunks(file_path, max_size_mb=20):
+    """Split file into byte chunks if it exceeds max_size_mb
+    Note: This creates byte-level chunks, not time-based chunks.
+    OpenAI Whisper API can handle partial audio files.
+    """
+    file_size_bytes = os.path.getsize(file_path)
+    file_size_mb = file_size_bytes / (1024 * 1024)
 
     # If file is small enough, return as-is
     if file_size_mb <= max_size_mb:
-        return [audio_path]
+        return [file_path]
 
-    # Load the audio file
-    audio = AudioSegment.from_file(audio_path)
-
-    # Calculate chunk duration based on file size
-    total_duration_ms = len(audio)
-    num_chunks = int(file_size_mb / max_size_mb) + 1
-    chunk_duration_ms = total_duration_ms // num_chunks
+    # Calculate chunk size in bytes
+    max_chunk_bytes = int(max_size_mb * 1024 * 1024)
 
     chunks = []
-    base_path = os.path.splitext(audio_path)[0]
+    base_path = os.path.splitext(file_path)[0]
+    extension = os.path.splitext(file_path)[1]
 
-    for i in range(num_chunks):
-        start_ms = i * chunk_duration_ms
-        end_ms = min((i + 1) * chunk_duration_ms, total_duration_ms)
+    with open(file_path, 'rb') as input_file:
+        chunk_index = 0
+        while True:
+            chunk_data = input_file.read(max_chunk_bytes)
+            if not chunk_data:
+                break
 
-        chunk = audio[start_ms:end_ms]
-        chunk_path = f"{base_path}_chunk_{i}.mp3"
-        chunk.export(chunk_path, format="mp3")
-        chunks.append(chunk_path)
+            chunk_path = f"{base_path}_chunk_{chunk_index}{extension}"
+            with open(chunk_path, 'wb') as chunk_file:
+                chunk_file.write(chunk_data)
+
+            chunks.append(chunk_path)
+            chunk_index += 1
 
     return chunks
 
@@ -86,7 +90,7 @@ def process_transcription(transcription_obj):
         max_chunk_size = 20 if is_audio else 100
 
         # Step 3: Split file into chunks if needed
-        file_chunks = split_audio_into_chunks(file_path, max_size_mb=max_chunk_size)
+        file_chunks = split_file_into_chunks(file_path, max_size_mb=max_chunk_size)
 
         all_raw_transcripts = []
 
